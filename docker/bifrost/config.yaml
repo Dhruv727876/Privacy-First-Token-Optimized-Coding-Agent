@@ -1,0 +1,96 @@
+# Bifrost Configuration for HackCulture
+# See: https://docs.getbifrost.ai/configuration
+
+# Virtual keys with budget limits
+virtual_keys:
+  hackculture-default:
+    budget:
+      daily_usd: 10
+      monthly_usd: 100
+      per_request_usd: 5
+    models:
+      - openai/gpt-4o-mini
+      - openai/gpt-4o
+      - anthropic/claude-sonnet-4
+      - anthropic/claude-haiku-4
+      - google/gemini-1.5-pro
+      - google/gemini-1.5-flash
+    rate_limit:
+      requests_per_minute: 100
+      tokens_per_minute: 500000
+
+# Provider configuration (add your API keys via environment variables)
+providers:
+  openai:
+    api_key_env: OPENAI_API_KEY
+    base_url: "https://api.openai.com/v1"
+  anthropic:
+    api_key_env: ANTHROPIC_API_KEY
+    base_url: "https://api.anthropic.com"
+  google:
+    api_key_env: GOOGLE_API_KEY
+    base_url: "https://generativelanguage.googleapis.com/v1beta"
+
+# Routing: Complexity router sends simple tasks to cheaper models
+routing:
+  complexity_router:
+    enabled: true
+    rules:
+      - name: "simple-classification"
+        condition: "task.type == 'classification' || task.type == 'extraction'"
+        models:
+          - openai/gpt-4o-mini
+          - anthropic/claude-haiku-4
+      - name: "code-tasks"
+        condition: "task.type == 'coding'"
+        models:
+          - anthropic/claude-sonnet-4
+          - openai/gpt-4o
+      - name: "reasoning"
+        condition: "task.type == 'reasoning'"
+        models:
+          - anthropic/claude-sonnet-4
+          - openai/gpt-4o
+      - name: "default"
+        models:
+          - openai/gpt-4o-mini
+          - anthropic/claude-haiku-4
+
+# Caching: Semantic caching with Code Mode for tool context reduction
+caching:
+  enabled: true
+  semantic_cache:
+    enabled: true
+    similarity_threshold: 0.95
+    max_entries: 10000
+    ttl_seconds: 86400
+  code_mode:
+    enabled: true
+    # Reduces tool context by 58-93% for coding tasks
+  prompt_cache:
+    enabled: true
+    auto_inject_checkpoints: true
+
+# Failover: Automatic fallback chains
+failover:
+  enabled: true
+  chains:
+    - name: "openai-primary"
+      primary: "openai/gpt-4o"
+      fallbacks:
+        - "anthropic/claude-sonnet-4"
+        - "google/gemini-1.5-pro"
+    - name: "openai-mini"
+      primary: "openai/gpt-4o-mini"
+      fallbacks:
+        - "anthropic/claude-haiku-4"
+        - "google/gemini-1.5-flash"
+
+# Observability
+logging:
+  level: "info"
+  format: "json"
+
+metrics:
+  enabled: true
+  port: 9090

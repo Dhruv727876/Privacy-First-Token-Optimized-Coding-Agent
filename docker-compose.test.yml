@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  bifrost:
+    image: maximhq/bifrost:latest
+    container_name: hackculture-bifrost-test
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./docker/bifrost:/config
+    environment:
+      - BIFROST_CONFIG=/config/config.yaml
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-test-key}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-test-key}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-test-key}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 15s
+    restart: "no"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: hackculture-ollama-test
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama-test-data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    healthcheck:
+      test: ["CMD", "ollama", "ps"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: "no"
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        ollama serve &
+        sleep 5
+        ollama pull qwen2.5:3b-q4_K_M || ollama pull qwen2.5:3b
+        ollama pull phi4-mini:3.8b-q4_K_M || ollama pull phi4-mini:3.8b
+        ollama pull smollm2:1.7b-q4_K_M || ollama pull smollm2:1.7b
+        wait
+
+volumes:
+  ollama-test-data:
+    driver: local

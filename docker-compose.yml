@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  bifrost:
+    image: maximhq/bifrost:latest
+    container_name: hackculture-bifrost
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./docker/bifrost:/config
+    environment:
+      - BIFROST_CONFIG=/config/config.yaml
+      - BIFROST_SETUP_TOKEN=hackculture-admin-secret-2026
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped

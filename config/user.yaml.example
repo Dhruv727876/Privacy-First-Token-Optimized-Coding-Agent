@@ -1,0 +1,59 @@
+# HackCulture User Configuration
+# Copy this to config/user.yaml and modify as needed
+# All values override config/default.yaml
+
+# bifrost:
+#   url: "http://localhost:8080"
+#   virtualKey: "my-virtual-key"
+#   timeoutMs: 120000
+#   enableCodeMode: true
+#   enableSemanticCache: true
+
+# budget:
+#   dailyUsd: 20
+#   monthlyUsd: 200
+#   perTaskUsd: 10
+#   alertThresholds: [50, 80, 100]
+#   onExceed: "pause_and_alert"
+#   webhookUrl: "https://hooks.slack.com/your-webhook"
+
+# privacy:
+#   defaultConfidential: false
+#   confidentialPaths:
+#     - "/home/user/secret-project"
+#     - "/work/proprietary"
+#   enforceLocalOnly: true
+#   fallbackChain: ["qwen2.5:3b", "phi4-mini:3.8b", "smollm2:1.7b"]
+
+# approval:
+#   read: "auto"
+#   write: "prompt"
+#   shell: "prompt"
+#   git: "prompt"
+#   allowlist:
+#     commands: ["npm test", "npm run build", "git status"]
+#     paths: ["*.md", "*.txt", "docs/**"]
+
+# localModels:
+#   ollamaUrl: "http://localhost:11434"
+#   maxVramGb: 4
+#   preferredModels:
+#     coding: "qwen2.5:3b"
+#     reasoning: "phi4-mini:3.8b"
+#     basic: "smollm2:1.7b"
+#     classification: "smollm2:1.7b"
+#   autoPull: true
+#   cpuFallback: true
+
+# tavily:
+#   apiKey: "tvly-your-api-key"
+#   timeoutMs: 30000
+#   maxResults: 5
+#   searchDepth: "advanced"
+#   cacheTtlMs: 300000
+
+# session:
+#   sessionDir: "./sessions"
+#   maxTokensBeforeCompact: 100000
+#   compactModel: "qwen2.5:3b"
+#   retainCompactedTurns: 10

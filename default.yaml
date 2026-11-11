@@ -1,0 +1,55 @@
+bifrost:
+  url: "http://localhost:8080"
+  virtualKey: "hackculture-default"
+  timeoutMs: 120000
+  retryAttempts: 3
+  enableCodeMode: true
+  enableSemanticCache: true
+
+budget:
+  dailyUsd: 10
+  monthlyUsd: 100
+  perTaskUsd: 5
+  alertThresholds: [50, 80, 100]
+  onExceed: "pause_and_alert"
+  webhookUrl: ""
+
+privacy:
+  defaultConfidential: false
+  confidentialPaths: []
+  enforceLocalOnly: true
+  fallbackChain: ["qwen2.5:3b", "phi4-mini:3.8b", "smollm2:1.7b"]
+
+approval:
+  read: "auto"
+  write: "prompt"
+  shell: "prompt"
+  git: "prompt"
+  search: "auto"
+  allowlist:
+    commands: []
+    paths: []
+
+localModels:
+  ollamaUrl: "http://localhost:11434"
+  maxVramGb: 4
+  preferredModels:
+    coding: "qwen2.5:3b"
+    reasoning: "phi4-mini:3.8b"
+    basic: "smollm2:1.7b"
+    classification: "smollm2:1.7b"
+  autoPull: true
+  cpuFallback: true
+
+tavily:
+  apiKey: ""
+  timeoutMs: 30000
+  maxResults: 5
+  searchDepth: "advanced"
+  cacheTtlMs: 300000
+
+session:
+  sessionDir: "./sessions"
+  maxTokensBeforeCompact: 100000
+  compactModel: "qwen2.5:3b"
+  retainCompactedTurns: 10
