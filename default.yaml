@@ -6,6 +6,8 @@ bifrost:
   enableCodeMode: true
   enableSemanticCache: true
 
+defaultModel: "minimaxai/minimax-m3.1-flash"
+
 budget:
   dailyUsd: 10
   monthlyUsd: 100

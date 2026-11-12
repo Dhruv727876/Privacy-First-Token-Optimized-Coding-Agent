@@ -174,7 +174,7 @@ async function buildConfig(cliOptions: CLIRunOptions): Promise<CLIConfig> {
     virtualKey: cliOptions.virtualKey || fileConfig.bifrost?.virtualKey || 'default',
     enableLocalModels: cliOptions.localModels !== false && !!fileConfig.localModels?.preferredModels,
     privacyMode: cliOptions.privacyMode || fileConfig.privacy?.defaultConfidential || false,
-    defaultModel: cliOptions.model || 'gpt-4o-mini',
+    defaultModel: cliOptions.model || fileConfig.defaultModel || 'minimaxai/minimax-m3.1-flash',
     localModels: fileConfig.localModels?.preferredModels
       ? Object.values(fileConfig.localModels.preferredModels)
       : ['qwen2.5:3b', 'phi4-mini:3.8b', 'smollm2:1.7b'],

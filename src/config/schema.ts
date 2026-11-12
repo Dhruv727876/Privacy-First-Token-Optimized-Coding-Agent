@@ -72,6 +72,7 @@ export const SessionConfigSchema = z.object({
 
 export const AppConfigSchema = z.object({
   bifrost: BifrostConfigSchema,
+  defaultModel: z.string().default('minimaxai/minimax-m3.1-flash'),
   budget: BudgetConfigSchema,
   privacy: PrivacyConfigSchema,
   approval: ApprovalConfigSchema,
@@ -103,6 +104,7 @@ export interface ConfigOverrides {
 
 export const DEFAULT_CONFIG: AppConfig = {
   bifrost: BifrostConfigSchema.parse({}),
+  defaultModel: 'minimaxai/minimax-m3.1-flash',
   budget: BudgetConfigSchema.parse({}),
   privacy: PrivacyConfigSchema.parse({}),
   approval: ApprovalConfigSchema.parse({}),
