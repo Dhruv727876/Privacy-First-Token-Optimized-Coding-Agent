@@ -418,3 +418,32 @@ docker compose -f docker-compose.test.yml down -v
 - Confirmed full test suite: **113 passing tests**, 13 skipped.
 - Started `hackculture-bifrost-test` Docker container and verified `http://localhost:8081/health` responds healthy (`components: { db_pings: 'ok' }, status: 'ok'`).
 - Verified CLI commands work properly (`main.js --help`, `main.js budget`).
+
+---
+
+### Session 2026-11-12 — Live NVIDIA NIM Provider & Gateway Integration COMPLETE
+
+**Stage:** Real Upstream Model Execution Verified
+
+**What Was Done:**
+- **Remote Git Sync:** Initialized git, committed project files, set remote origin to `https://github.com/Dhruv727876/Privacy-First-Token-Optimized-Coding-Agent.git` (`main`), and pushed cleanly.
+- **Bifrost Gateway & Virtual Key Setup:**
+  - Running Bifrost container `hackculture-bifrost` on `http://localhost:8080`.
+  - Configured virtual key `hackculture-default` (`sk-bf-68756312-6564-47a6-abab-65822990d01f`).
+  - Added required headers `x-bf-vk` and `x-bifrost-virtual-key` to `src/gateway/bifrost-client.ts`.
+  - Updated healthcheck parsing in `bifrost-client.ts` to recognize Bifrost's `{ status: 'ok' }` format.
+- **Provider URL Routing Resolved:**
+  - Diagnosed double `/v1/v1` issue causing upstream 404s when `https://integrate.api.nvidia.com/v1` was used as provider Base URL in Bifrost.
+  - Corrected provider Base URL to `https://integrate.api.nvidia.com`.
+- **OpenAI Tool Schema Compatibility Fix:**
+  - Standardized tool schemas in `src/agent/agent-core.ts` to OpenAI function call format: `type: 'object'`, nested `properties: { ... }`, and explicit `required: [...]` array.
+  - Eliminated Bifrost 400 Bad Request (`Invalid request payload`).
+- **Live Agent Run Verification:**
+  - Tested: `node dist/cli/main.js run "Say hello in two words" --model "minimaxai/minimax-m3.1-flash" --no-planning`
+  - Upstream NVIDIA model routed through Bifrost returned: `"Hello there"`.
+  - Token tracking recorded: `80 tokens`.
+- **Code Quality & CI Readiness:**
+  - `npm run lint` clean: **0 errors, 0 warnings**.
+  - `npm run build` clean: **0 TypeScript errors**.
+  - Full test suite: **113 passing tests**, 13 integration skipped.
+  - Git repository synchronized with remote `origin/main`.
