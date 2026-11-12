@@ -139,9 +139,6 @@ export class ModelRouterImpl implements ModelRouter {
       const health = await this.bifrost.healthCheck();
       if (!health.healthy) return null;
 
-      const budget = await this.bifrost.getVirtualKeyBudget(this.config.virtualKey);
-      if (!budget || budget.remaining.daily_usd <= 0) return null;
-
       // Use Bifrost's complexity routing
       const model = request.model || this.config.defaultModel;
       const estimatedCost = this.estimateCost(request, model);

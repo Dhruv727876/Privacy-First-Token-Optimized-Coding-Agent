@@ -30,12 +30,6 @@ export function createLogger(config: Partial<LogConfig> = {}): Logger {
     },
   };
 
-  // Check if we can use pretty print (not in test, stdout is TTY)
-  const canPretty = finalConfig.pretty &&
-    process.stdout.isTTY &&
-    !process.env.VITEST &&
-    !process.env.JEST_WORKER_ID;
-
   const logger = pino(options);
 
   loggerInstance = logger;

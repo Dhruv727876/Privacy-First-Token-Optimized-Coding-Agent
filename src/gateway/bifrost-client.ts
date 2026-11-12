@@ -17,6 +17,7 @@ export class BifrostClient {
     return {
       headers: {
         'Content-Type': 'application/json',
+        'x-bf-vk': this.config.virtualKey,
         'x-bifrost-virtual-key': this.config.virtualKey,
       },
       body: request,
@@ -80,7 +81,15 @@ export class BifrostClient {
         };
       }
 
-      return await response.json() as HealthStatus;
+      const data = await response.json() as Record<string, unknown>;
+      const isHealthy = data.healthy === true || data.status === 'ok';
+
+      return {
+        healthy: isHealthy,
+        version: (data.version as string) || 'unknown',
+        uptime_seconds: (data.uptime_seconds as number) || 0,
+        providers: (data.providers as HealthStatus['providers']) || {},
+      };
     } catch {
       return {
         healthy: false,

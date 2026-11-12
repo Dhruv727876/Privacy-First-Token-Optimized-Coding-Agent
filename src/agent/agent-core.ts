@@ -194,13 +194,41 @@ Respond with a JSON plan:
     toolCalls?: ToolCall[];
     usage: TokenUsage;
   }> {
+    // Build standard OpenAI function tool schemas
+    const tools = this.toolRegistry.list().map(t => {
+      const required: string[] = [];
+      const properties: Record<string, { type: string; description: string; enum?: string[] }> = {};
+      for (const [key, param] of Object.entries(t.parameters)) {
+        if (param.required) {
+          required.push(key);
+        }
+        properties[key] = {
+          type: param.type,
+          description: param.description,
+          ...(param.enum ? { enum: param.enum } : {}),
+        };
+      }
+      return {
+        type: 'function' as const,
+        function: {
+          name: t.name,
+          description: t.description,
+          parameters: {
+            type: 'object' as const,
+            properties,
+            ...(required.length > 0 ? { required } : {}),
+          },
+        },
+      };
+    });
+
     const request: ChatCompletionRequest = {
-      model: 'auto',
+      model: this.context.routerContext.request.model || 'auto',
       messages: this.state.messages.map(m => ({
         role: m.role,
         content: m.content,
         tool_calls: m.toolCalls?.map(tc => ({
-          id: tc.name,
+          id: tc.id || tc.name,
           type: 'function',
           function: { name: tc.name, arguments: JSON.stringify(tc.args) },
         })),
@@ -208,14 +236,7 @@ Respond with a JSON plan:
       })),
       max_tokens: 4096,
       temperature: 0.2,
-      tools: this.toolRegistry.list().map(t => ({
-        type: 'function',
-        function: {
-          name: t.name,
-          description: t.description,
-          parameters: t.parameters,
-        },
-      })),
+      tools,
     };
 
     // Route through model router

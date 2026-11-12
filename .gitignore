@@ -9,3 +9,10 @@ sessions/
 *.log
 .DS_Store
 Thumbs.db
+
+# Budget state and config
+*.json
+!package.json
+!tsconfig.json
+!tsconfig.build.json
+config/user.yaml
